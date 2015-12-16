@@ -39,6 +39,21 @@ r.table("foo").getAll("foo").optArg("index", "crabs").filter(x -> (x).gt(3L + 2L
 3. Emits perhaps more parens than necessary to ensure precedence is correct
 4. Doesn't handle exotic stuff like list comprehensions, binary output etc.
 
+### How it works:
+
+It uses the python `ast` module, then emits the tree with different syntax in each language. It has a pre-processing step that marks whether each node is a reql ast node or not. That information is used so that it can transpile things like:
+
+```py
+r.expr(1) + (2 * 3)
+```
+into the JavaScript expression:
+
+```js
+r.expr(1).add(2 * 3)
+```
+
+(Note how the `*` operator is not converted to `.mul`)
+
 ### To do:
 
 Right now, the transpilers support being passed a set of variable names that are considered to be 'reql'. This is so we can detect when a binary operator is being used on a reql expression, or whether it represents a native binary operation. For example, if we have the expression `tbl.filter(lambda x: x + 2)`, without giving it the context `{'r', 'tbl'}` it will assume `tbl` is a normal python value, and that the lambda passed to filter is operating on normal python values, and will not convert `x + 2` into `x.add(2)` in the java and js outputs (it will accidentally be right for the ruby output).
