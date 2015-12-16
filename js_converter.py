@@ -3,7 +3,11 @@
 import ast
 import logging
 
-from cStringIO import StringIO
+
+try:
+    from io import StringIO
+except ImportError:
+    from cStringIO import StringIO
 
 from conversion_utils import dromedary
 
