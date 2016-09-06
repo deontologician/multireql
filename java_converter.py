@@ -363,13 +363,13 @@ class Visitor(ast.NodeVisitor):
         self.visit(node.body)
 
     def visit_Subscript(self, node):
-        if node.slice is None or type(node.slice.value) != ast.Num:
+        if node.slice is None or type(node.slice.value) not in (ast.Num, ast.Str):
             logger.error("While doing: %s", ast.dump(node))
-            raise RuntimeError("Only integers subscript can be converted."
+            raise RuntimeError("Only integers and string subscript can be converted."
                                " Got %s" % node.slice.value.s)
         self.visit(node.value)
-        self.write(".get(")
-        self.write(str(node.slice.value.n))
+        self.write(".bracket(")
+        self.visit(node.slice.value)
         self.write(")")
 
     def visit_ListComp(self, node):
@@ -453,6 +453,8 @@ class Visitor(ast.NodeVisitor):
             ast.Mult: "mul",
             ast.Div: "div",
             ast.Mod: "mod",
+            ast.BitAnd: "and",
+            ast.BitOr: "or",
         }
         if node.is_reql:
             if not node.left.is_reql:

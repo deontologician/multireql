@@ -16,7 +16,10 @@ DEFAULT_TEST_DIR = '../../test/rql_test/src'
 
 
 def main():
-    snippet = sys.argv[1]
+    if len(sys.argv) > 1:
+        snippet = sys.argv[1]
+    else:
+        snippet = sys.stdin.read()
     parsed_snippet = parse_snippet(snippet, exit_on_fail=True)
 
     print("Python:")
@@ -26,10 +29,12 @@ def main():
     ruby_snippet = transpile(parsed_snippet, 'rb')
     print(" - ", ruby_snippet)
 
+    print()
     print("JavaScript:")
     js_snippet = transpile(parsed_snippet, 'js')
     print(" - ", js_snippet)
 
+    print()
     print("Java:")
     java_snippet = transpile(parsed_snippet, 'java')
     print(" - ", java_snippet)

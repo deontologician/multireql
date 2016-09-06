@@ -204,6 +204,8 @@ class Visitor(ast.NodeVisitor):
             ast.Mult: "mul",
             ast.Div: "div",
             ast.Mod: "mod",
+            ast.BitAnd: "and",
+            ast.BitOr: "or",
         }
         if node.is_reql:
             if not node.left.is_reql:
